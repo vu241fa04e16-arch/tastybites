@@ -7,14 +7,23 @@ const cors = require("cors");
 
 const app = express();
 
+const PORT = process.env.PORT || 5000;
+const ADMIN_KEY = process.env.ADMIN_KEY || "my-tasty-admin-123";
+
+// CORS CONFIGURATION
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://rad-sprinkles-bcccd6.netlify.app",
+  process.env.CLIENT_ORIGIN
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:5173"
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "x-admin-key"]
 }));
 
 app.use(express.json());
-
-const PORT = process.env.PORT || 5000;
-const ADMIN_KEY = process.env.ADMIN_KEY || "my-tasty-admin-123";
 
 // PRODUCT MODEL
 const Product = mongoose.model("Product", new mongoose.Schema({
@@ -63,7 +72,6 @@ const Coupon = mongoose.model("Coupon", new mongoose.Schema({
 }));
 
 // INITIAL FOOD DATA
-// Images are managed in frontend App.jsx.
 const foodData = [
   {
     name: "Pizza",
@@ -147,7 +155,9 @@ const foodData = [
 // ADMIN MIDDLEWARE
 function admin(req, res, next) {
   if (req.headers["x-admin-key"] !== ADMIN_KEY) {
-    return res.status(401).json({ message: "Invalid admin key" });
+    return res.status(401).json({
+      message: "Invalid admin key"
+    });
   }
 
   next();
@@ -169,7 +179,6 @@ app.get("/api/health", (req, res) => {
 });
 
 // GET PRODUCTS
-// Do not send image URLs from MongoDB.
 app.get("/api/products", async (req, res) => {
   try {
     const products = await Product.find({
@@ -178,7 +187,9 @@ app.get("/api/products", async (req, res) => {
 
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -192,7 +203,9 @@ app.get("/api/products/bestsellers", async (req, res) => {
 
     res.json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -225,7 +238,9 @@ app.post("/api/coupons/validate", async (req, res) => {
 
     res.json({ code, discount });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -325,7 +340,9 @@ app.post("/api/orders", async (req, res) => {
       status: order.status
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -348,7 +365,9 @@ app.get("/api/orders", async (req, res) => {
 
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -371,7 +390,9 @@ app.get("/api/orders/:id", async (req, res) => {
 
     res.json(order);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -381,7 +402,9 @@ app.post("/api/admin/products", admin, async (req, res) => {
     const product = await Product.create(req.body);
     res.status(201).json(product);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      message: error.message
+    });
   }
 });
 
@@ -402,7 +425,9 @@ app.put("/api/admin/products/:id", admin, async (req, res) => {
 
     res.json(product);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      message: error.message
+    });
   }
 });
 
@@ -419,7 +444,9 @@ app.delete("/api/admin/products/:id", admin, async (req, res) => {
 
     res.json({ message: "Product deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -429,7 +456,9 @@ app.get("/api/admin/orders", admin, async (req, res) => {
     const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -464,7 +493,9 @@ app.patch("/api/admin/orders/:id/status", admin, async (req, res) => {
 
     res.json(order);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 });
 
@@ -510,8 +541,9 @@ async function startServer() {
     );
 
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
+
   } catch (error) {
     console.error("Server startup error:", error.message);
     process.exit(1);
