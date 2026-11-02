@@ -1,0 +1,837 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #26352c;
+  background: #fffdf8;
+  font-synthesis: none;
+  --green: #244c38;
+  --orange: #ed7845;
+  --cream: #fff8ed;
+  --text: #26352c;
+  --muted: #7d857e;
+  --border: #eee9df;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  background: #fffdf8;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  transition: 0.25s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* HEADER */
+
+header {
+  width: 100%;
+  min-height: 82px;
+  padding: 14px 7%;
+  background: rgba(255, 253, 248, 0.96);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(15px);
+}
+
+.logo {
+  color: var(--green);
+  font-family: 'Playfair Display', serif;
+  font-size: 29px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.logo span,
+footer span {
+  color: var(--orange);
+}
+
+.logo small {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+nav button {
+  background: transparent;
+  color: #58665c;
+  padding: 10px 13px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+nav button:hover,
+nav button.active {
+  background: #edf3ec;
+  color: var(--green);
+}
+
+.carttop {
+  background: var(--green);
+  color: white;
+  padding: 13px 23px;
+  border-radius: 30px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.carttop:hover {
+  background: var(--orange);
+  transform: translateY(-2px);
+}
+
+/* NOTIFICATION */
+
+.notice {
+  position: fixed;
+  top: 95px;
+  right: 25px;
+  z-index: 200;
+  background: var(--green);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px #0002;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 90%;
+}
+
+.notice button {
+  background: transparent;
+  color: white;
+  font-size: 23px;
+}
+
+/* HERO */
+
+.hero {
+  min-height: 510px;
+  padding: 65px 9%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 55px;
+  background:
+    radial-gradient(circle at 10% 10%, #f8e9d7 0, transparent 40%),
+    linear-gradient(120deg, #fff8ed, #f5f5e9);
+  overflow: hidden;
+}
+
+.hero > div > small {
+  color: var(--orange);
+  letter-spacing: 3px;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  color: var(--green);
+  font-size: clamp(48px, 6vw, 76px);
+  line-height: 1.08;
+  margin: 22px 0;
+}
+
+.hero h1 em {
+  color: var(--orange);
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 420px;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.hero button,
+.couponbanner button {
+  background: var(--orange);
+  color: white;
+  padding: 15px 27px;
+  border-radius: 30px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px #ed784533;
+}
+
+.hero button:hover,
+.couponbanner button:hover {
+  background: var(--green);
+  transform: translateY(-3px);
+}
+
+.hero img {
+  width: 100%;
+  height: 370px;
+  object-fit: cover;
+  border-radius: 45% 45% 20px 20px;
+  box-shadow: 0 20px 45px #65452a25;
+}
+
+/* COMMON CONTENT */
+
+.wrap {
+  width: min(1180px, 88%);
+  margin: 75px auto;
+}
+
+.wrap > h1,
+.wrap > h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--green);
+  font-size: clamp(30px, 4vw, 43px);
+  margin-bottom: 12px;
+}
+
+.wrap > h2 em {
+  color: var(--orange);
+}
+
+.sub {
+  color: var(--muted);
+  margin-bottom: 32px;
+  line-height: 1.7;
+}
+
+.narrow {
+  max-width: 700px;
+}
+
+/* FOOD GRID */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: 0.3s ease;
+  box-shadow: 0 5px 20px #283c2d08;
+}
+
+.card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 18px 35px #283c2d16;
+}
+
+.photo {
+  height: 205px;
+  position: relative;
+  overflow: hidden;
+  background: #f3eee5;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .photo img {
+  transform: scale(1.07);
+}
+
+.photo label {
+  position: absolute;
+  left: 13px;
+  top: 13px;
+  background: var(--orange);
+  color: white;
+  padding: 7px 12px;
+  border-radius: 30px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.heart {
+  position: absolute;
+  right: 13px;
+  top: 13px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: white;
+  color: var(--orange);
+  font-size: 21px;
+  box-shadow: 0 3px 12px #0002;
+}
+
+.heart:hover {
+  background: var(--orange);
+  color: white;
+}
+
+.cardbody {
+  padding: 19px;
+}
+
+.cardbody small {
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cardbody h3 {
+  font-size: 19px;
+  color: var(--green);
+  margin: 9px 0;
+}
+
+.cardbody p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  min-height: 38px;
+}
+
+.cardbody > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 17px;
+}
+
+.cardbody > div b {
+  font-size: 19px;
+  color: var(--green);
+}
+
+.cardbody > div button {
+  background: #edf3ec;
+  color: var(--green);
+  padding: 10px 16px;
+  border-radius: 25px;
+  font-weight: 700;
+}
+
+.cardbody > div button:hover {
+  background: var(--green);
+  color: white;
+}
+
+/* COUPON BANNER */
+
+.couponbanner {
+  margin-top: 75px;
+  padding: 45px;
+  border-radius: 25px;
+  background: linear-gradient(120deg, #244c38, #376b4d);
+  color: white;
+  text-align: center;
+}
+
+.couponbanner h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+
+.couponbanner p {
+  color: #e4eee5;
+  margin-bottom: 22px;
+}
+
+.couponbanner button {
+  background: var(--orange);
+}
+
+/* MENU TOOLS */
+
+.tools {
+  display: flex;
+  gap: 13px;
+  margin: 25px 0;
+}
+
+.tools input,
+.tools select,
+.coupon input,
+.field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  outline: none;
+  background: white;
+  color: var(--text);
+}
+
+.tools input:focus,
+.tools select:focus,
+.coupon input:focus,
+.field input:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px #ed78451c;
+}
+
+.tools button,
+.coupon button {
+  background: var(--green);
+  color: white;
+  padding: 13px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tools button:hover,
+.coupon button:hover {
+  background: var(--orange);
+}
+
+.chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 25px 0;
+}
+
+.chips button {
+  background: #f4f1e9;
+  color: #667166;
+  padding: 11px 19px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chips button:hover,
+.chips button.chosen {
+  background: var(--green);
+  color: white;
+}
+
+/* PANELS AND CART */
+
+.panel {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 27px;
+  border-radius: 20px;
+  box-shadow: 0 7px 25px #283c2d09;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr;
+  gap: 25px;
+  align-items: start;
+}
+
+.columns aside {
+  position: sticky;
+  top: 110px;
+}
+
+.panel h3 {
+  color: var(--green);
+  margin-bottom: 20px;
+}
+
+.cartitem {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 17px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cartitem:last-child {
+  border-bottom: none;
+}
+
+.cartitem img {
+  width: 90px;
+  height: 85px;
+  object-fit: cover;
+  border-radius: 13px;
+}
+
+.cartitem b {
+  color: var(--green);
+}
+
+.cartitem p {
+  color: var(--muted);
+  margin: 7px 0;
+  font-size: 13px;
+}
+
+.cartitem button {
+  background: #edf3ec;
+  color: var(--green);
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  font-weight: 800;
+}
+
+.quantity {
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.coupon {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.columns aside > p {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  margin: 15px 0;
+}
+
+.columns aside > p b {
+  color: var(--green);
+}
+
+.columns aside h2 {
+  color: var(--green);
+  margin: 25px 0;
+}
+
+/* BUTTONS */
+
+.wide {
+  width: 100%;
+  padding: 15px;
+  background: var(--orange);
+  color: white;
+  border-radius: 12px;
+  font-weight: 800;
+  margin-top: 12px;
+}
+
+.wide:hover {
+  background: var(--green);
+}
+
+/* CHECKOUT */
+
+form.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+form.panel h2 {
+  color: var(--green);
+}
+
+form.panel > small {
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ORDERS */
+
+.order {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.order p {
+  color: var(--muted);
+  margin-top: 7px;
+  font-size: 13px;
+}
+
+.order > b {
+  color: var(--green);
+}
+
+.order button {
+  background: var(--green);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+}
+
+/* TRACKING */
+
+.steps {
+  display: grid;
+  gap: 12px;
+  margin: 25px 0;
+}
+
+.steps span {
+  padding: 13px 16px;
+  background: #f3f1eb;
+  color: #8b918a;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.steps span.done {
+  background: #e8f2e8;
+  color: var(--green);
+  font-weight: 800;
+}
+
+.panel > p {
+  color: var(--muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.panel > p b {
+  color: var(--green);
+}
+
+/* EMPTY STATE */
+
+.empty {
+  text-align: center;
+  padding: 60px 15px;
+  color: var(--muted);
+}
+
+/* FOOTER */
+
+footer {
+  background: #203d2e;
+  color: white;
+  text-align: center;
+  padding: 45px 20px;
+  margin-top: 90px;
+}
+
+footer b {
+  font-family: 'Playfair Display', serif;
+  font-size: 27px;
+}
+
+footer p {
+  color: #d1dfd3;
+  margin: 12px 0 25px;
+}
+
+footer small {
+  color: #a9c0ad;
+  font-size: 11px;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 1000px) {
+  header {
+    padding: 15px 4%;
+    flex-wrap: wrap;
+  }
+
+  nav {
+    order: 3;
+    width: 100%;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero {
+    padding: 55px 6%;
+  }
+}
+
+@media (max-width: 700px) {
+  header {
+    justify-content: space-between;
+  }
+
+  nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 5px;
+  }
+
+  nav button {
+    white-space: nowrap;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 45px 7%;
+    gap: 30px;
+  }
+
+  .hero img {
+    height: 260px;
+    border-radius: 20px;
+  }
+
+  .wrap {
+    width: 90%;
+    margin: 50px auto;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .photo {
+    height: 155px;
+  }
+
+  .cardbody {
+    padding: 13px;
+  }
+
+  .cardbody h3 {
+    font-size: 16px;
+  }
+
+  .cardbody p {
+    font-size: 11px;
+  }
+
+  .cardbody > div b {
+    font-size: 16px;
+  }
+
+  .cardbody > div button {
+    padding: 9px 11px;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .columns aside {
+    position: static;
+  }
+
+  .tools {
+    flex-direction: column;
+  }
+
+  .couponbanner {
+    padding: 30px 18px;
+  }
+
+  .couponbanner h2 {
+    font-size: 26px;
+  }
+
+  .order {
+    flex-wrap: wrap;
+  }
+
+  .cartitem {
+    grid-template-columns: 70px 1fr;
+  }
+
+  .cartitem img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .cartitem > b {
+    grid-column: 2;
+  }
+
+  .notice {
+    right: 5%;
+    left: 5%;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .photo {
+    height: 210px;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .carttop {
+    padding: 11px 15px;
+  }
+}
