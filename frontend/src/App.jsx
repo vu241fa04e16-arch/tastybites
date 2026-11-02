@@ -1,9 +1,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000"
+).replace(/\/+$/, "");
 
-// ALL FOOD IMAGES ARE MANAGED IN FRONTEND
+// FOOD IMAGES
 const foodImages = {
   pizza: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800",
   burger: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800",
@@ -18,11 +20,21 @@ const foodImages = {
   momos: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800"
 };
 
+// GET IMAGE USING EXACT OR PARTIAL PRODUCT NAME
 function getFoodImage(name) {
   const key = String(name || "").trim().toLowerCase();
 
-  return foodImages[key] ||
-    "https://placehold.co/600x400?text=Food+Image";
+  if (foodImages[key]) {
+    return foodImages[key];
+  }
+
+  const matchedKey = Object.keys(foodImages).find(food =>
+    key.includes(food) || food.includes(key)
+  );
+
+  return matchedKey
+    ? foodImages[matchedKey]
+    : "https://placehold.co/600x400?text=Food+Image";
 }
 
 const categories = [
@@ -35,6 +47,7 @@ const categories = [
 
 const money = value => "₹" + Number(value || 0).toFixed(0);
 
+// API HELPER
 async function api(path, options = {}) {
   const response = await fetch(API + path, {
     ...options,
@@ -90,6 +103,7 @@ export default function App() {
   const [trackedOrder, setTrackedOrder] = useState(null);
 
   const [message, setMessage] = useState("");
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
   const orderStatuses = [
     "Placed",
@@ -98,11 +112,40 @@ export default function App() {
     "Delivered"
   ];
 
-  // LOAD PRODUCTS FROM MONGODB
+  // LOAD PRODUCTS FROM BACKEND
   useEffect(() => {
-    api("/api/products")
-      .then(setProducts)
-      .catch(error => setMessage(error.message));
+    let active = true;
+
+    async function loadProducts() {
+      try {
+        setLoadingProducts(true);
+
+        const result = await api("/api/products");
+
+        // Supports either an array or an object containing products
+        const productList = Array.isArray(result)
+          ? result
+          : result.products || [];
+
+        if (active) {
+          setProducts(productList);
+        }
+      } catch (error) {
+        if (active) {
+          setMessage("Unable to load products: " + error.message);
+        }
+      } finally {
+        if (active) {
+          setLoadingProducts(false);
+        }
+      }
+    }
+
+    loadProducts();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   // SAVE WISHLIST
@@ -121,21 +164,24 @@ export default function App() {
   // FILTER AND SORT PRODUCTS
   const filteredProducts = useMemo(() => {
     let result = products.filter(product => {
+      const productName = String(product.name || "").toLowerCase();
+
       const matchesCategory =
         category === "All" || product.category === category;
 
-      const matchesSearch =
-        product.name.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = productName.includes(search.toLowerCase());
 
       return matchesCategory && matchesSearch;
     });
 
     if (sort === "low") {
-      result.sort((a, b) => a.price - b.price);
+      result.sort((a, b) => Number(a.price) - Number(b.price));
     } else if (sort === "high") {
-      result.sort((a, b) => b.price - a.price);
+      result.sort((a, b) => Number(b.price) - Number(a.price));
     } else if (sort === "name") {
-      result.sort((a, b) => a.name.localeCompare(b.name));
+      result.sort((a, b) =>
+        String(a.name || "").localeCompare(String(b.name || ""))
+      );
     } else {
       result.sort(
         (a, b) => Number(b.bestseller) - Number(a.bestseller)
@@ -147,7 +193,7 @@ export default function App() {
 
   // CART TOTALS
   const subtotal = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + Number(item.price) * item.quantity,
     0
   );
 
@@ -266,7 +312,7 @@ export default function App() {
         "/api/orders?email=" + encodeURIComponent(historyEmail)
       );
 
-      setOrders(result);
+      setOrders(Array.isArray(result) ? result : result.orders || []);
     } catch (error) {
       setMessage(error.message);
     }
@@ -368,18 +414,22 @@ export default function App() {
             </p>
 
             <div className="grid">
-              {products
-                .filter(product => product.bestseller)
-                .slice(0, 4)
-                .map(product => (
-                  <FoodCard
-                    key={product._id}
-                    product={product}
-                    addToCart={addToCart}
-                    wishlist={wishlist}
-                    toggleWishlist={toggleWishlist}
-                  />
-                ))}
+              {loadingProducts ? (
+                <p>Loading food items...</p>
+              ) : (
+                products
+                  .filter(product => product.bestseller)
+                  .slice(0, 4)
+                  .map(product => (
+                    <FoodCard
+                      key={product._id}
+                      product={product}
+                      addToCart={addToCart}
+                      wishlist={wishlist}
+                      toggleWishlist={toggleWishlist}
+                    />
+                  ))
+              )}
             </div>
 
             <div className="couponbanner">
@@ -434,18 +484,22 @@ export default function App() {
           </div>
 
           <div className="grid">
-            {filteredProducts.map(product => (
-              <FoodCard
-                key={product._id}
-                product={product}
-                addToCart={addToCart}
-                wishlist={wishlist}
-                toggleWishlist={toggleWishlist}
-              />
-            ))}
+            {loadingProducts ? (
+              <p>Loading food items...</p>
+            ) : (
+              filteredProducts.map(product => (
+                <FoodCard
+                  key={product._id}
+                  product={product}
+                  addToCart={addToCart}
+                  wishlist={wishlist}
+                  toggleWishlist={toggleWishlist}
+                />
+              ))
+            )}
           </div>
 
-          {filteredProducts.length === 0 && (
+          {!loadingProducts && filteredProducts.length === 0 && (
             <p className="empty">No food items found.</p>
           )}
         </main>
@@ -704,7 +758,8 @@ export default function App() {
               </div>
 
               <p>
-                Delivery address: {trackedOrder.customer?.address || trackedOrder.address}
+                Delivery address:{" "}
+                {trackedOrder.customer?.address || trackedOrder.address}
               </p>
 
               <p>
@@ -714,8 +769,6 @@ export default function App() {
           )}
         </main>
       )}
-
-      
     </>
   );
 }
@@ -735,10 +788,11 @@ function FoodCard({
         <img
           src={getFoodImage(product.name)}
           alt={product.name}
+          loading="lazy"
           onError={event => {
             event.currentTarget.onerror = null;
             event.currentTarget.src =
-              "https://placehold.co/600x400?text=Food+Image";
+              "https://placehold.co/600x400?text=Image+Unavailable";
           }}
         />
 
